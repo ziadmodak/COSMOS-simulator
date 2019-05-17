@@ -157,8 +157,8 @@ file_data = np.vstack((files, tint.round(2), (5*sig*1e-3).round(4))).T
 
 
 # Lists of source sizes and fluxes to be simulated
-src_size = [0, 0.2, 0.5, 1.0]
-fluxes = [0.5, 0.2, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01, 0.005]
+src_size = [0, 0.2, 0.5, 1.0] # FWHM arcsec
+fluxes = [0.5, 0.2, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01, 0.005] #mJy
 setnum = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19']
 
 # Loop over the size and flux lists and generate 100 simulations in the matrix of sizes and fluxes
