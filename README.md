@@ -5,4 +5,5 @@ CASA helper functions to simulate extragalactic ALMA observations in the [COSMOS
 To-do:
 
 - [ ] Make a separate file with the functions
-- [ ] Add an example FITS image and a working example.py
+- [ ] sigma can be estimated in the model_simanalyze function using astropy.fits
+- [ ] Add a few fits files to the data folder and write a test.py
