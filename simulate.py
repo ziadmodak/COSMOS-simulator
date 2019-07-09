@@ -1,24 +1,22 @@
-#import string
 import numpy as np
 import glob
-#import random
 import os
 
 from astropy.io import fits
 
 
 
-def model_simulate(ref_file, outfile, flux, source_size_maj, source_size_min, point_src):
-    """ Generate a model CASA image file based on the properties of an input image from 
+def model_simulate(ref_file, outfile, flux, point_src, source_size_maj, source_size_min):
+    """ Generate a model CASA image based on the properties of an input image from 
     the COSMOS ALMA Archive.
     
     Args: 
     ref_file: The input Archive file to represent
-    outfile: The name given to the output files like (model image and pointing file)
+    outfile: The name given to the output files like model image and pointing file
     flux: Flux (in mJy) of the model
-    source_size_maj: Major axis size of the Gaussian source
-    source_size_min: Minor axis size of the Gaussian source
-    point_src: When True makes a point source model instead of a Gaussian source when False 
+    point_src: When True, makes a point source model instead of a Gaussian source when False
+    source_size_maj: Major axis size of the Gaussian source. Not used when point_src = True
+    source_size_min: Minor axis size of the Gaussian source. Not used when point_src = True 
 
     Returns:
     hdu: The header of the input Archive file
@@ -82,6 +80,7 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
     ref_file: The ALMA archive .fits file to get the beamsize
     t_int: The integration time (in sec) of the simulated ALMA observation
     direction: The central sky direction of the generated MS
+    inp_seed: Seed for random number generator used to add noise to the visibilities
 
     Returns:
     beam_size: The synthesized beam size of the input Archive image
@@ -119,11 +118,10 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
 
 
 
-def model_clean(t_int, dir, thresh):
-	""" Generate a CLEANed image from the simulated MS.
+def model_clean(dir, thresh):
+	""" Generate a dirty image from the simulated MS.
 
 	Args:
-	t_int: The integration time (in sec)  ## Remove this, NOT NEEDED
 	dir: The central sky direction of the image
 	thresh: The threshold (in mJy) of the image to CLEAN down to
 
@@ -146,13 +144,14 @@ def model_clean(t_int, dir, thresh):
 
 	
 
-# Genearte a single array of Archive files, required integration time to reach the noise level
+# Generate a single array of Archive files, required integration time to reach the noise level
 # in them and the noise level
-path='/vol/arc2/archive2/ziad/data/'
-setpath=path+'set'
+path='data/'
 files = glob.glob(path+'*.image.fits')
-tint = np.loadtxt(path+'t_x_pntg.out')
-sig = np.loadtxt(path+'sigma_x.out')
+#####################
+tint = np.array([]) ##### NEEDS ATTENTION #######
+#####################
+sig = np.loadtxt(path+'sigma_x.out') ### Can be estimated directly in one of the functions instead of an input.
 file_data = np.vstack((files, tint.round(2), (5*sig*1e-3).round(4))).T
 
 
@@ -162,12 +161,6 @@ fluxes = [0.5, 0.2, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01, 0.005] #mJy
 setnum = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19']
 
 # Loop over the size and flux lists and generate 100 simulations in the matrix of sizes and fluxes
-
-#### CHECK THE END OF THE FILE FOR PARALLEL CODE IN A HACKY WAY
-#np.random.seed(1909765)
-#sim_seeds = np.random.randint(0,999999,size=72000)
-#set_seed = np.random.randint(0,9999999, size=20)
-
 sim_seed_ct = 0
 for x in setnum:
 	ct = 0
