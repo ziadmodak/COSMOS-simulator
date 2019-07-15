@@ -1,24 +1,22 @@
-#import string
 import numpy as np
 import glob
-#import random
 import os
 
 from astropy.io import fits
 
 
 
-def model_simulate(ref_file, outfile, flux, source_size_maj, source_size_min, point_src):
-    """ Generate a model CASA image file based on the properties of an input image from 
+def model_simulate(ref_file, outfile, flux, point_src, source_size_maj, source_size_min):
+    """ Generate a model CASA image based on the properties of an input image from 
     the COSMOS ALMA Archive.
     
     Args: 
     ref_file: The input Archive file to represent
-    outfile: The name given to the output files like (model image and pointing file)
+    outfile: The name given to the output files like model image and pointing file
     flux: Flux (in mJy) of the model
-    source_size_maj: Major axis size of the Gaussian source
-    source_size_min: Minor axis size of the Gaussian source
-    point_src: When True makes a point source model instead of a Gaussian source when False 
+    point_src: When True, makes a point source model instead of a Gaussian source when False
+    source_size_maj: Major axis size of the Gaussian source. Not used when point_src = True
+    source_size_min: Minor axis size of the Gaussian source. Not used when point_src = True 
 
     Returns:
     hdu: The header of the input Archive file
@@ -82,6 +80,7 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
     ref_file: The ALMA archive .fits file to get the beamsize
     t_int: The integration time (in sec) of the simulated ALMA observation
     direction: The central sky direction of the generated MS
+    inp_seed: Seed for random number generator used to add noise to the visibilities
 
     Returns:
     beam_size: The synthesized beam size of the input Archive image
@@ -119,11 +118,10 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
 
 
 
-def model_clean(t_int, dir, thresh):
+def model_clean(dir, thresh):
 	""" Generate a dirty image from the simulated MS.
 
 	Args:
-	t_int: The integration time (in sec)  ## Remove this, NOT NEEDED
 	dir: The central sky direction of the image
 	thresh: The threshold (in mJy) of the image to CLEAN down to
 
@@ -143,4 +141,3 @@ def model_clean(t_int, dir, thresh):
 		   pbcor=True)
 
 	return None
-
