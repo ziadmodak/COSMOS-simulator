@@ -31,7 +31,7 @@ def model_simulate(ref_file, outfile, flux, point_src, source_size_maj, source_s
     im_dec = au.deg2radec(dec=hdu['CRVAL2'], prec=3, delimiter=' ')[13:].replace(':','.')
     im_direction = im_ra + im_dec
     
-    # Generate an empty component list
+    # Initialise an empty component list
     cl.done()
     
     # Add a component (point source or Gaussian) at the central pixel and at the frequency 
@@ -88,7 +88,7 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
 
     """
 
-    # Get the beamsize, calculate the cellsize and calculate scan times to cover the map
+    # Get the beamsize, cellsize, and map size
     beam_size = '%0.3f' %(fits.getval(filename=ref_file, keyword='BMAJ') * 3600)+'arcsec'
     cell_size = str(float('%0.3s' %beam_size) / 8)+'arcsec'
     fwhm_rad = 1.13*3e8/header['CRVAL3']/12
@@ -118,11 +118,11 @@ def model_simobserve(ref_file, t_int, direction, inp_seed):
 
 
 
-def model_clean(dir, thresh):
+def model_clean(sky_dir, thresh):
 	""" Generate a dirty image from the simulated MS.
 
 	Args:
-	dir: The central sky direction of the image
+	sky_dir: The central sky direction of the image
 	thresh: The threshold (in mJy) of the image to CLEAN down to
 
 	Returns:
@@ -134,7 +134,7 @@ def model_clean(dir, thresh):
 		   imagename='sim_'+str(ct)+'/dirty'+str(ct),
 		   imsize = header['NAXIS1'],
 		   cell = str(header['CDELT2']*3600)+'arcsec',
-		   phasecenter = dir,
+		   phasecenter = sky_dir,
 		   niter = 0,
 		   threshold = thresh+'mJy',
 		   gridder='standard',

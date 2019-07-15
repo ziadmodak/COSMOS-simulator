@@ -26,9 +26,9 @@ for i in src_size:
 				header, im_direction = model_simulate(ref_file=filename,
 					outfile='simulations/model_'+str(ct), flux=j,
 					source_size_maj=i, source_size_min=i, point_src=False)
-			beam_size, cell_size = model_simobserve(ref_file=filename,
-			t_int=t_int, direction = im_direction, inp_seed=sim_seeds[sim_seed_ct])
-			model_clean(t_int=t_int, dir=im_direction, thresh=sigma)
+	        	beam_size, cell_size = model_simobserve(ref_file=filename, t_int=t_int, 
+                                direction = im_direction, inp_seed=sim_seeds[sim_seed_ct])
+			model_clean(sky_dir=im_direction, thresh=sigma)
 			f = open('sim_'+str(ct)+'/log.out', 'w')
 			f.write(''.join(('File: ', filename, '\n', 'T_int (s): ',
 				t_int, '\n', 'Threshold (mJy): ', sigma, '\n', 'Model Source Size (arcsec): ', str(i),
